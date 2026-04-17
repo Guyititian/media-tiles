@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Media Tiles</title>
+
+  <style>
+    body {
+      background:#111;
+      color:white;
+      font-family:Arial;
+      padding:20px;
+    }
+
+    h2 {
+      margin-top:40px;
+      border-bottom:1px solid #333;
+      padding-bottom:5px;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,160px);
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .tile {
+      background:#222;
+      padding:10px;
+      border-radius:10px;
+      text-align:center;
+    }
+
+    img {
+      width:100%;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    button {
+      margin-top:6px;
+      width:100%;
+    }
+  </style>
+</head>
+
+<body>
+<h1>Media Tiles</h1>
+<div id="app">Loading…</div>
+
+<script>
+const owner = "Guyititian";
+const repo = "media-tiles";
+
+const baseURL = `https://${owner}.github.io/${repo}/`;
+const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/collections`;
+
+const categories = ["genres", "franchises", "decades"];
+
+async function load() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+
+  for (const category of categories) {
+    const url = `${apiBase}/${category}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const section = document.createElement("div");
+    const title = document.createElement("h2");
+    title.textContent = category.toUpperCase();
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    if (Array.isArray(data)) {
+      data
+        .filter(file => file.name.match(/\.(jpeg|jpg|png|webp)$/i))
+        .forEach(file => {
+
+          const imgURL = `${baseURL}collections/${category}/${file.name}`;
+
+          const tile = document.createElement("div");
+          tile.className = "tile";
+
+          tile.innerHTML = `
+            <img src="${imgURL}" onclick="copy('${imgURL}')" />
+            <div>${file.name.replace(/\.[^/.]+$/, "")}</div>
+            <button onclick="copy('${imgURL}')">Copy Link</button>
+          `;
+
+          grid.appendChild(tile);
+        });
+    }
+
+    section.appendChild(title);
+    section.appendChild(grid);
+    app.appendChild(section);
+  }
+
+  document.getElementById("app").innerHTML = "";
+}
+
+function copy(text) {
+  navigator.clipboard.writeText(text);
+  alert("Copied: " + text);
+}
+
+load().catch(err => {
+  document.getElementById("app").innerHTML =
+    "Error loading repo data: " + err.message;
+});
+</script>
+
+</body>
+</html>
