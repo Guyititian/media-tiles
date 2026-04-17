@@ -1,84 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Browse Media Tiles</title>
+<meta charset="UTF-8">
+<title>Browse Media Tiles</title>
 
-  <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
+<style>
+body {
+  background:#111;
+  color:white;
+  font-family:Arial;
+  margin:20px;
+}
 
-    h1 {
-      margin-bottom: 10px;
-    }
+h1 { margin-bottom:10px; }
 
-    h2 {
-      margin-top: 40px;
-      border-bottom: 1px solid #333;
-      padding-bottom: 6px;
-      text-transform: uppercase;
-    }
+input {
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
+  border:none;
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 15px 0 25px;
-      border-radius: 6px;
-      border: none;
-    }
+/* Tabs */
+.tabs {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
+.tab {
+  padding:8px 12px;
+  background:#222;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  opacity:0.8;
+}
 
-    .tile {
-      background: #222;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-    }
+.tab.active {
+  background:white;
+  color:black;
+  opacity:1;
+}
 
-    .tile img {
-      width: 100%;
-      border-radius: 8px;
-      cursor: pointer;
-      display: block;
-    }
+/* Grid */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+}
 
-    button {
-      margin-top: 6px;
-      width: 100%;
-      padding: 6px;
-      cursor: pointer;
-    }
+.tile {
+  background:#222;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+}
 
-    /* Loader */
-    #loader {
-      text-align: center;
-      margin-top: 60px;
-    }
+.tile img {
+  width:100%;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    .spinner {
-      width: 45px;
-      height: 45px;
-      border: 4px solid #333;
-      border-top: 4px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 10px;
-    }
+button {
+  margin-top:6px;
+  width:100%;
+  padding:6px;
+}
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+/* Loader */
+#loader {
+  text-align:center;
+  margin-top:40px;
+}
+</style>
 </head>
 
 <body>
@@ -87,23 +85,52 @@
 
 <input id="search" placeholder="Search tiles..." />
 
+<div class="tabs" id="tabs"></div>
+
 <div id="app"></div>
 
 <script src="assets.js"></script>
 
 <script>
 let allItems = [];
+let currentCategory = "all";
 
 function copy(text) {
   navigator.clipboard.writeText(text);
-  alert("Copied: " + text);
 }
 
-function renderCategory(category, items) {
-  const section = document.createElement("div");
+/* GET CATEGORY FROM URL */
+const params = new URLSearchParams(window.location.search);
+const initialCategory = params.get("category") || "all";
 
-  const title = document.createElement("h2");
-  title.textContent = category;
+/* BUILD TABS */
+function buildTabs() {
+  const tabs = document.getElementById("tabs");
+
+  const allTab = ["all", "All"];
+  const tabList = [allTab, ...categories.map(c => [c, c])];
+
+  tabList.forEach(([key, label]) => {
+    const div = document.createElement("div");
+    div.className = "tab";
+    div.textContent = label.replace(/-/g," ");
+
+    if (key === initialCategory) div.classList.add("active");
+
+    div.onclick = () => {
+      window.location.href = key === "all"
+        ? "browse.html"
+        : `browse.html?category=${key}`;
+    };
+
+    tabs.appendChild(div);
+  });
+}
+
+/* RENDER */
+function render(items) {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
 
   const grid = document.createElement("div");
   grid.className = "grid";
@@ -113,62 +140,47 @@ function renderCategory(category, items) {
     tile.className = "tile";
 
     tile.innerHTML = `
-      <img src="${item.url}" onclick="copy('${item.url}')" />
+      <img src="${item.url}" onclick="copy('${item.url}')"/>
       <div>${item.name}</div>
-      <button onclick="copy('${item.url}')">Copy Link</button>
+      <button onclick="copy('${item.url}')">Copy</button>
     `;
 
     grid.appendChild(tile);
   });
 
-  section.appendChild(title);
-  section.appendChild(grid);
-
-  return section;
+  app.appendChild(grid);
 }
 
+/* LOAD DATA */
 async function load() {
-  const app = document.getElementById("app");
-
-  app.innerHTML = `
-    <div id="loader">
-      <div class="spinner"></div>
-      <p>Loading media tiles...</p>
-    </div>
-  `;
+  document.getElementById("app").innerHTML = "<div id='loader'>Loading...</div>";
 
   allItems = [];
 
-  for (const category of categories) {
-    try {
-      const items = await fetchCategory(category);
-      allItems = allItems.concat(items);
+  const list = initialCategory === "all"
+    ? categories
+    : [initialCategory];
 
-      const section = renderCategory(category, items);
-      app.appendChild(section);
-
-    } catch (err) {
-      console.error("Error loading:", category, err);
-    }
+  for (const cat of list) {
+    const items = await fetchCategory(cat);
+    allItems = allItems.concat(items);
   }
 
-  // Remove loader AFTER everything loads
-  const loader = document.getElementById("loader");
-  if (loader) loader.remove();
+  render(allItems);
 }
 
-// SEARCH
-document.addEventListener("input", (e) => {
-  if (e.target.id !== "search") return;
-
+/* SEARCH */
+document.getElementById("search").addEventListener("input", (e) => {
   const q = e.target.value.toLowerCase();
 
-  document.querySelectorAll(".tile").forEach(tile => {
-    const text = tile.innerText.toLowerCase();
-    tile.style.display = text.includes(q) ? "block" : "none";
-  });
+  const filtered = allItems.filter(i =>
+    i.name.toLowerCase().includes(q)
+  );
+
+  render(filtered);
 });
 
+buildTabs();
 load();
 </script>
 
