@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Media Tiles</title>
+
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 40px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .tile {
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .tile img {
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      display: block;
+    }
+
+    button {
+      margin-top: 6px;
+      width: 100%;
+      padding: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Media Tiles</h1>
+<div id="app">Loading...</div>
+
+<script>
+const owner = "Guyititian";
+const repo = "media-tiles";
+
+const baseURL = `https://${owner}.github.io/${repo}/`;
+const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/collections`;
+
+const categories = [
+  "genres",
+  "franchises",
+  "decades",
+  "networks",
+  "people",
+  "studios",
+  "actors",
+  "directors",
+  "production-companies",
+  "collections",
+  "special"
+];
+
+function copy(text) {
+  navigator.clipboard.writeText(text);
+  alert("Copied: " + text);
+}
+
+async function load() {
+  const app = document.getElementById("app");
+
+  try {
+    app.innerHTML = "<h2>Loading...</h2>";
+
+    for (const category of categories) {
+      const section = document.createElement("div");
+
+      const title = document.createElement("h2");
+      title.textContent = category;
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      const res = await fetch(`${apiBase}/${category}`);
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        data
+          .filter(file => file.name.match(/\.(jpeg|jpg|png|webp)$/i))
+          .forEach(file => {
+
+            const imgURL = `${baseURL}collections/${category}/${file.name}`;
+
+            const tile = document.createElement("div");
+            tile.className = "tile";
+
+            tile.innerHTML = `
+              <img src="${imgURL}" onclick="copy('${imgURL}')" />
+              <div>${file.name.replace(/\.[^/.]+$/, "")}</div>
+              <button onclick="copy('${imgURL}')">Copy Link</button>
+            `;
+
+            grid.appendChild(tile);
+          });
+      }
+
+      section.appendChild(title);
+      section.appendChild(grid);
+      app.appendChild(section);
+    }
+
+  } catch (err) {
+    app.innerHTML = "Error loading gallery: " + err.message;
+    console.error(err);
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
