@@ -51,6 +51,18 @@ input {
   opacity:1;
 }
 
+/* Sections */
+section {
+  margin-bottom:30px;
+}
+
+h2 {
+  margin:20px 0 10px;
+  text-transform:capitalize;
+  font-size:18px;
+  opacity:0.9;
+}
+
 /* Grid */
 .grid {
   display:grid;
@@ -78,7 +90,7 @@ button {
   cursor:pointer;
 }
 
-/* Loader */
+/* App container */
 #app {
   margin-top:10px;
 }
@@ -101,12 +113,12 @@ button {
 let allItems = [];
 let currentCategory = "all";
 
-/* COPY */
+/* COPY FUNCTION */
 function copy(text) {
   navigator.clipboard.writeText(text);
 }
 
-/* READ URL STATE */
+/* URL STATE */
 const params = new URLSearchParams(window.location.search);
 currentCategory = params.get("category") || "all";
 
@@ -142,13 +154,14 @@ function buildTabs() {
   });
 }
 
-/* KEEP ACTIVE TAB IN SYNC */
+/* KEEP TAB STATE SYNCED */
 function updateTabs() {
   document.querySelectorAll(".tab").forEach(tab => {
-    const match = tab.textContent.toLowerCase().replace(/ /g, "-");
+    const label = tab.textContent.toLowerCase().replace(/ /g, "-");
+
     if (
       (currentCategory === "all" && tab.textContent.toLowerCase() === "all") ||
-      match === currentCategory
+      label === currentCategory
     ) {
       tab.classList.add("active");
     } else {
@@ -157,15 +170,73 @@ function updateTabs() {
   });
 }
 
-/* RENDER */
-function render(items) {
+/* LOAD DATA (GROUPED VIEW) */
+async function loadData() {
+  const app = document.getElementById("app");
+  app.innerHTML = "Loading...";
+
+  const container = document.createElement("div");
+  allItems = [];
+
+  const list = currentCategory === "all"
+    ? categories
+    : [currentCategory];
+
+  for (const cat of list) {
+    try {
+      const items = await fetchCategory(cat);
+      allItems = allItems.concat(items);
+
+      // SECTION
+      const section = document.createElement("section");
+
+      const title = document.createElement("h2");
+      title.textContent = cat.replace(/-/g, " ");
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      items.forEach(item => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+
+        tile.innerHTML = `
+          <img src="${item.url}" onclick="copy('${item.url}')"/>
+          <div>${item.name}</div>
+          <button onclick="copy('${item.url}')">Copy Link</button>
+        `;
+
+        grid.appendChild(tile);
+      });
+
+      section.appendChild(title);
+      section.appendChild(grid);
+      container.appendChild(section);
+
+    } catch (e) {
+      console.error("Error loading category:", cat, e);
+    }
+  }
+
+  app.innerHTML = "";
+  app.appendChild(container);
+}
+
+/* SEARCH (FLATTENS RESULTS) */
+document.getElementById("search").addEventListener("input", (e) => {
+  const q = e.target.value.toLowerCase();
+
+  const filtered = allItems.filter(i =>
+    i.name.toLowerCase().includes(q)
+  );
+
   const app = document.getElementById("app");
   app.innerHTML = "";
 
   const grid = document.createElement("div");
   grid.className = "grid";
 
-  items.forEach(item => {
+  filtered.forEach(item => {
     const tile = document.createElement("div");
     tile.className = "tile";
 
@@ -179,42 +250,9 @@ function render(items) {
   });
 
   app.appendChild(grid);
-}
-
-/* LOAD DATA (NO PAGE RELOAD) */
-async function loadData() {
-  document.getElementById("app").innerHTML = "Loading...";
-
-  allItems = [];
-
-  const list = currentCategory === "all"
-    ? categories
-    : [currentCategory];
-
-  for (const cat of list) {
-    try {
-      const items = await fetchCategory(cat);
-      allItems = allItems.concat(items);
-    } catch (e) {
-      console.error("Error loading", cat, e);
-    }
-  }
-
-  render(allItems);
-}
-
-/* SEARCH */
-document.getElementById("search").addEventListener("input", (e) => {
-  const q = e.target.value.toLowerCase();
-
-  const filtered = allItems.filter(i =>
-    i.name.toLowerCase().includes(q)
-  );
-
-  render(filtered);
 });
 
-/* BACK/FORWARD BUTTON SUPPORT */
+/* BACK BUTTON SUPPORT */
 window.addEventListener("popstate", () => {
   const params = new URLSearchParams(window.location.search);
   currentCategory = params.get("category") || "all";
