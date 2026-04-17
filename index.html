@@ -1,0 +1,67 @@
+<script>
+const baseURL = "https://guyititian.github.io/media-tiles/";
+
+const structure = {
+  genres: ["horror.jpeg"],
+  franchises: ["scream-collection.png"],
+  decades: ["90s.jpeg"],
+  networks: [],
+  people: [],
+  studios: [],
+  special: []
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  const app = document.getElementById("app");
+
+  if (!app) {
+    console.error("Missing #app container");
+    return;
+  }
+
+  for (const category in structure) {
+    const items = structure[category];
+
+    console.log("Loading category:", category, items);
+
+    const section = document.createElement("div");
+
+    const title = document.createElement("h2");
+    title.textContent = category;
+    section.appendChild(title);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    items.forEach(file => {
+      const url = `${baseURL}collections/${category}/${file}`;
+
+      const tile = document.createElement("div");
+      tile.className = "tile";
+
+      const img = document.createElement("img");
+      img.src = url;
+
+      img.onerror = () => {
+        console.error("FAILED IMAGE:", url);
+      };
+
+      const label = document.createElement("div");
+      label.textContent = file;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Copy Link";
+      btn.onclick = () => navigator.clipboard.writeText(url);
+
+      tile.appendChild(img);
+      tile.appendChild(label);
+      tile.appendChild(btn);
+
+      grid.appendChild(tile);
+    });
+
+    section.appendChild(grid);
+    app.appendChild(section);
+  }
+});
+</script>
