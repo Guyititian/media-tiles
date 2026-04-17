@@ -1,40 +1,70 @@
-# Media-Tiles
+# Media Tiles
 
-This repository is a static image library used for media collections. It contains image tiles organized for use in a media browsing interface (such as custom TV or dashboard applications).
+A simple visual library for browsing and sharing organized image tiles across genres, franchises, decades, and other collections.
 
-## Base URL (GitHub Pages)
+This project is designed as a fast, lightweight way to access and copy direct image URLs for use in media setups, dashboards, or personal libraries.
 
-All images are accessible via:
+---
+
+## 🌐 Open the App
+
+👉 https://guyititian.github.io/media-tiles/
+
+Start here to browse all collections.
+
+---
+
+## 📁 What This Is
+
+Media Tiles is a structured image library built around categories like:
+
+- Genres  
+- Franchises  
+- Decades  
+- Networks  
+- Studios  
+- People  
+- Special collections  
+
+Each tile links directly to a hosted image that can be copied and reused instantly.
+
+---
+
+## ⚙️ How It Works
+
+- Landing page → choose a category or enter full library  
+- Browse page → filter, search, and copy image links  
+- All images are served directly from this repository via GitHub Pages  
+
+---
+
+## 🖼️ Image Usage
+
+Each image has a direct URL that can be copied and used anywhere that supports image linking.
+
+No downloads required—everything is served directly from the web.
+
+---
+
+## 🔗 Access
+
+Everything is accessible from the main site:
 
 https://guyititian.github.io/media-tiles/
 
-## Structure
+---
 
-Images are organized under the `/collections` directory:
+## 🧩 Purpose
 
-- `/collections/genres/`
-- `/collections/franchises/`
-- `/collections/decades/`
-- `/collections/networks/`
-- `/collections/people/`
-- `/collections/studios/`
-- `/collections/special/`
+This project is designed for:
 
-## File Naming Rules
+- Media server libraries  
+- Custom dashboards  
+- Personal organization systems  
+- UI mockups and visual collections  
 
-To keep URLs consistent and avoid broken links:
+---
 
-- Use lowercase file names only
-- Use hyphens instead of spaces (example: `sci-fi.jpeg`)
-- Do not rename files after they are in use
-- Keep folder structure consistent
+## 👤 Owner
 
-## Example File URL
-
-https://guyititian.github.io/media-tiles/collections/genres/horror.jpeg
-
-## Notes
-
-- This repository is used as a media asset library, not a code project.
-- Changes may take a short time to reflect due to caching.
-- Keep naming and structure consistent to ensure existing links remain valid.
+Built and maintained by Guyititian
