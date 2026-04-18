@@ -88,11 +88,14 @@ h2 {
   gap:12px;
 }
 
+/* TILE (FIXED LAYOUT) */
 .tile {
   background:#222;
   padding:10px;
   border-radius:10px;
-  text-align:center;
+  display:flex;
+  flex-direction:column;
+  height:100%;
   transition:0.15s;
 }
 
@@ -100,20 +103,34 @@ h2 {
   transform: translateY(-2px);
 }
 
+/* IMAGE (FORCED 16:9) */
 .tile img {
   width:100%;
+  aspect-ratio:16 / 9;
+  object-fit:cover;
   border-radius:8px;
   cursor:pointer;
 }
 
-button {
+/* TITLE (CLAMPED) */
+.tile-title {
   margin-top:6px;
+  font-size:14px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* BUTTON LOCKED TO BOTTOM */
+.tile button {
+  margin-top:auto;
   width:100%;
   padding:6px;
   cursor:pointer;
 }
 
-/* TOAST (UPGRADED) */
+/* TOAST */
 #toast {
   position: fixed;
   bottom: 24px;
@@ -240,7 +257,7 @@ function updateTabs() {
   });
 }
 
-/* LOAD DATA WITH COUNTS */
+/* LOAD DATA */
 async function loadData() {
   const app = document.getElementById("app");
   app.innerHTML = "Loading...";
@@ -271,7 +288,7 @@ async function loadData() {
 
         tile.innerHTML = `
           <img src="${item.url}" onclick="copy('${item.url}')"/>
-          <div>${item.name}</div>
+          <div class="tile-title">${item.name}</div>
           <button onclick="copy('${item.url}')">Copy Link</button>
         `;
 
@@ -311,7 +328,7 @@ document.getElementById("search").addEventListener("input", (e) => {
 
     tile.innerHTML = `
       <img src="${item.url}" onclick="copy('${item.url}')"/>
-      <div>${item.name}</div>
+      <div class="tile-title">${item.name}</div>
       <button onclick="copy('${item.url}')">Copy Link</button>
     `;
 
