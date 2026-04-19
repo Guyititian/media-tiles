@@ -21,7 +21,7 @@ async function fetchCategory(category) {
   if (!Array.isArray(data)) return [];
 
   return data
-    .filter(f => f.name.match(/\.(jpeg|jpg|png|webp|gif)$/i))
+    .filter(f => f.name.match(/\.(jpeg|jpg|png|webp|gif|mp4)$/i))
     .map(f => ({
       name: f.name.replace(/\.[^/.]+$/, ""),
       url: `${baseURL}collections/${category}/${f.name}`,
