@@ -23,11 +23,12 @@ body {
   font-family: system-ui, -apple-system, Segoe UI, Arial;
 }
 
+/* PAGE */
 .page {
   padding: 28px;
 }
 
-/* HEADER CARD */
+/* HEADER */
 .header {
   max-width:1100px;
   margin: 0 auto 18px auto;
@@ -38,7 +39,7 @@ body {
   box-shadow: var(--shadow);
 }
 
-/* BRAND */
+/* TOP ROW */
 .brand-row {
   display:flex;
   align-items:center;
@@ -46,6 +47,7 @@ body {
   margin-bottom: 10px;
 }
 
+/* BRAND (NOW MORE LIKE A BUTTON) */
 .brand {
   font-size:20px;
   font-weight:800;
@@ -57,20 +59,39 @@ body {
   color: var(--accent);
 }
 
-.context {
+/* NAV SWITCH (LIBRARY / TOOLS) */
+.ecosystem-nav {
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.nav-btn {
+  padding:6px 10px;
+  border-radius:10px;
   font-size:12px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,0.03);
   color: var(--muted);
+  cursor:pointer;
+  transition:0.2s;
 }
 
-/* SEARCH FIXED CONTAINMENT */
-.search-wrap {
-  width:100%;
-  display:block;
+.nav-btn:hover {
+  transform: translateY(-2px);
+  color: var(--text);
 }
 
+.nav-btn.active {
+  background: rgba(122,162,255,0.15);
+  border-color: rgba(122,162,255,0.35);
+  color: var(--text);
+  box-shadow: 0 10px 30px rgba(122,162,255,0.08);
+}
+
+/* SEARCH */
 input {
   width:100%;
-  box-sizing:border-box; /* 🔥 fixes overflow issue */
   padding:12px 14px;
   border-radius:12px;
   border:1px solid var(--border);
@@ -97,7 +118,6 @@ input {
   border:1px solid var(--border);
   color: var(--muted);
   transition: 0.2s;
-  text-transform: capitalize;
 }
 
 .tab:hover {
@@ -108,25 +128,12 @@ input {
   background: rgba(122,162,255,0.15);
   border-color: rgba(122,162,255,0.35);
   color: var(--text);
-  box-shadow: 0 10px 30px rgba(122,162,255,0.08);
 }
 
 /* CONTENT */
 #app {
   max-width:1100px;
   margin: 0 auto;
-}
-
-section {
-  margin-top: 26px;
-}
-
-h2 {
-  font-size:14px;
-  font-weight:600;
-  margin: 18px 0 12px;
-  color: var(--muted);
-  text-transform: capitalize;
 }
 
 /* GRID */
@@ -136,7 +143,7 @@ h2 {
   gap:14px;
 }
 
-/* TILE */
+/* TILE (WINDOW STYLE FIXED DEPTH) */
 .tile {
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border: 1px solid var(--border);
@@ -144,8 +151,8 @@ h2 {
   overflow:hidden;
   display:flex;
   flex-direction:column;
-  transition: all 0.25s ease;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: all 0.25s ease;
 }
 
 .tile:hover {
@@ -154,6 +161,7 @@ h2 {
   box-shadow: 0 18px 55px rgba(0,0,0,0.55);
 }
 
+/* IMAGE */
 .tile img {
   width:100%;
   aspect-ratio:16/9;
@@ -161,11 +169,13 @@ h2 {
   cursor:pointer;
 }
 
+/* TEXT */
 .tile-title {
-  padding:10px;
+  padding:10px 10px 0 10px;
   font-size:13px;
 }
 
+/* BUTTON */
 .tile button {
   margin:10px;
   padding:8px;
@@ -190,6 +200,7 @@ h2 {
   transition:0.2s;
   pointer-events:none;
 }
+
 </style>
 </head>
 
@@ -200,13 +211,19 @@ h2 {
   <div class="header">
 
     <div class="brand-row">
+
       <div class="brand" id="brand"><span>Media</span> Tiles</div>
-      <div class="context" id="contextTitle"></div>
+
+      <div class="ecosystem-nav">
+        <div class="nav-btn active">Library</div>
+        <div class="nav-btn" onclick="window.location.href='https://guyititian.github.io/media-lab/'">
+          Tools
+        </div>
+      </div>
+
     </div>
 
-    <div class="search-wrap">
-      <input id="search" placeholder="Search library..." />
-    </div>
+    <input id="search" placeholder="Search library..." />
 
     <div class="tabs" id="tabs"></div>
 
@@ -221,15 +238,9 @@ h2 {
 <script src="assets.js"></script>
 
 <script>
+
 let allItems = [];
 let currentCategory = "all";
-
-/* IMPORTANT:
-   This keeps GitHub folder names intact
-   but allows nice UI labels */
-function label(cat) {
-  return cat.charAt(0).toUpperCase() + cat.slice(1);
-}
 
 const params = new URLSearchParams(window.location.search);
 currentCategory = params.get("category") || "all";
@@ -242,17 +253,14 @@ function copy(text) {
   setTimeout(()=>t.style.opacity=0, 900);
 }
 
-/* BRAND NAV */
+/* BRAND HOME */
 document.getElementById("brand").onclick = () => {
   window.location.href = "index.html";
 };
 
 /* HEADER */
 function updateHeader() {
-  const el = document.getElementById("contextTitle");
-  el.textContent = currentCategory === "all"
-    ? "Library"
-    : label(currentCategory) + " / Library";
+  const el = document.getElementById("app");
 }
 
 /* TABS */
@@ -268,7 +276,7 @@ function buildTabs() {
 
     if (cat === currentCategory) d.classList.add("active");
 
-    d.textContent = cat === "all" ? "All" : label(cat);
+    d.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
 
     d.onclick = () => {
       currentCategory = cat;
@@ -279,7 +287,6 @@ function buildTabs() {
 
       history.pushState({}, "", url);
 
-      updateHeader();
       load();
       buildTabs();
     };
@@ -288,25 +295,26 @@ function buildTabs() {
   });
 }
 
-/* LOAD */
+/* FAST PARALLEL LOAD */
 async function load() {
   const app = document.getElementById("app");
   app.innerHTML = "";
-
-  allItems = [];
 
   const list = currentCategory === "all"
     ? categories
     : [currentCategory];
 
-  for (const cat of list) {
-    const items = await fetchCategory(cat);
-    allItems.push(...items);
+  const results = await Promise.all(
+    list.map(cat => fetchCategory(cat))
+  );
+
+  results.forEach((items, i) => {
+    const cat = list[i];
 
     const section = document.createElement("section");
 
     const title = document.createElement("h2");
-    title.textContent = label(cat);
+    title.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
 
     const grid = document.createElement("div");
     grid.className = "grid";
@@ -318,7 +326,7 @@ async function load() {
       tile.innerHTML = `
         <img src="${i.url}" onclick="copy('${i.url}')"/>
         <div class="tile-title">${i.name}</div>
-        <button onclick="copy('${i.url}')">Copy</button>
+        <button onclick="copy('${i.url}')">Copy Link</button>
       `;
 
       grid.appendChild(tile);
@@ -327,12 +335,13 @@ async function load() {
     section.appendChild(title);
     section.appendChild(grid);
     app.appendChild(section);
-  }
+  });
 }
 
 /* SEARCH */
 document.getElementById("search").addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
+
   const app = document.getElementById("app");
   app.innerHTML = "";
 
@@ -346,20 +355,22 @@ document.getElementById("search").addEventListener("input", e => {
   filtered.forEach(i => {
     const tile = document.createElement("div");
     tile.className = "tile";
+
     tile.innerHTML = `
       <img src="${i.url}" onclick="copy('${i.url}')"/>
       <div class="tile-title">${i.name}</div>
-      <button onclick="copy('${i.url}')">Copy</button>
+      <button onclick="copy('${i.url}')">Copy Link</button>
     `;
+
     grid.appendChild(tile);
   });
 
   app.appendChild(grid);
 });
 
-updateHeader();
 buildTabs();
 load();
+
 </script>
 
 </body>
