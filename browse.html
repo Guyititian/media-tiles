@@ -6,64 +6,63 @@
 
 <style>
 body {
+  margin:0;
   background:#070707;
   color:white;
   font-family:Arial;
-  margin:0;
 }
 
-/* HEADER = STRONG LAYER AGAIN */
+/* =========================
+   HEADER SYSTEM
+========================= */
 .header {
   position:sticky;
   top:0;
 
   padding:16px 20px;
 
-  background: rgba(10,10,10,0.85);
+  background: rgba(10,10,10,0.88);
   backdrop-filter: blur(14px);
 
   border-bottom:1px solid rgba(255,255,255,0.06);
-
-  z-index:10;
 }
 
-/* BRAND = ANCHOR POINT */
+/* BRAND (ANCHOR) */
 #brand {
-  font-size:22px;
+  font-size:26px;
+  font-weight:600;
   margin:0;
   cursor:pointer;
 
-  display:inline-block;
-
   text-shadow:
-    0 0 30px rgba(255,255,255,0.25),
-    0 0 60px rgba(255,255,255,0.10);
+    0 0 25px rgba(255,255,255,0.25);
 }
 
-/* CONTEXT = SECONDARY LAYER */
+/* CONTEXT */
 #contextTitle {
   font-size:12px;
-  opacity:0.6;
+  opacity:0.55;
   margin-top:4px;
 }
 
-/* TABS = MID LAYER (IMPORTANT FIX) */
+/* =========================
+   TABS (SECONDARY LAYER)
+========================= */
 .tabs {
   display:flex;
   gap:10px;
   margin-top:12px;
+  flex-wrap:wrap;
 }
 
-/* DEFAULT TAB */
 .tab {
   padding:10px 14px;
   border-radius:10px;
 
-  font-size:13px;
-
   background: rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.06);
 
+  font-size:13px;
   opacity:0.7;
 
   cursor:pointer;
@@ -71,20 +70,20 @@ body {
   transition:0.2s;
 }
 
-/* ACTIVE TAB = IMPORTANT DEPTH SHIFT */
 .tab.active {
   background: rgba(255,255,255,0.12);
   border:1px solid rgba(255,255,255,0.18);
 
-  box-shadow:
-    0 0 25px rgba(255,255,255,0.08);
+  box-shadow: 0 0 25px rgba(255,255,255,0.10);
 
   transform: translateY(-2px);
 
   opacity:1;
 }
 
-/* SEARCH = OWN OBJECT LAYER */
+/* =========================
+   SEARCH (SEPARATE SURFACE)
+========================= */
 input {
   width:calc(100% - 40px);
   margin:16px 20px;
@@ -94,16 +93,16 @@ input {
   border-radius:12px;
 
   background: rgba(255,255,255,0.04);
-
   border:1px solid rgba(255,255,255,0.08);
 
   color:white;
 
-  box-shadow:
-    inset 0 0 15px rgba(0,0,0,0.5);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
 }
 
-/* CONTENT LAYER */
+/* =========================
+   CONTENT
+========================= */
 section {
   padding:0 20px 40px;
 }
@@ -120,7 +119,7 @@ h2 {
   gap:14px;
 }
 
-/* TILE = LOWEST LAYER (SUBTLE) */
+/* TILE (LOWEST HIERARCHY) */
 .tile {
   background: rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.05);
@@ -129,19 +128,16 @@ h2 {
 
   padding:10px;
 
-  box-shadow:
-    0 10px 25px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.55);
 
   transition:0.2s;
 }
 
 .tile:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 25px 60px rgba(0,0,0,0.8);
+  box-shadow: 0 25px 65px rgba(0,0,0,0.85);
 }
 
-/* IMAGE */
 .tile img {
   width:100%;
   aspect-ratio:16/9;
@@ -149,24 +145,24 @@ h2 {
   border-radius:8px;
 }
 
-/* TEXT */
 .tile-title {
   margin-top:6px;
   font-size:13px;
-  opacity:0.8;
+  opacity:0.75;
 }
 
-/* BUTTON */
 .tile button {
   margin-top:8px;
   width:100%;
   padding:6px;
 
-  border:none;
   border-radius:8px;
+  border:none;
 
   background: rgba(255,255,255,0.06);
   color:white;
+
+  cursor:pointer;
 }
 
 /* TOAST */
@@ -175,11 +171,12 @@ h2 {
   bottom:20px;
   left:50%;
   transform:translateX(-50%);
-  padding:10px 14px;
-  border-radius:10px;
 
   background:white;
   color:black;
+
+  padding:10px 14px;
+  border-radius:10px;
 
   opacity:0;
   transition:0.2s;
@@ -212,7 +209,7 @@ currentCategory = params.get("category") || "all";
 
 function copy(t){
   navigator.clipboard.writeText(t);
-  document.getElementById("toast").style.opacity = "1";
+  document.getElementById("toast").style.opacity="1";
   setTimeout(()=>document.getElementById("toast").style.opacity="0",900);
 }
 
@@ -229,19 +226,19 @@ function updateHeader(){
 
 function buildTabs(){
   const tabs = document.getElementById("tabs");
-  tabs.innerHTML = "";
+  tabs.innerHTML="";
 
   const list = ["all", ...categories];
 
   list.forEach(c=>{
-    const d = document.createElement("div");
-    d.className = "tab";
+    const d=document.createElement("div");
+    d.className="tab";
 
     if(c===currentCategory) d.classList.add("active");
 
-    d.textContent = c;
+    d.textContent=c;
 
-    d.onclick = ()=>{
+    d.onclick=()=>{
       currentCategory=c;
       history.pushState({}, "", c==="all"?"browse.html":`browse.html?category=${c}`);
       updateHeader();
@@ -254,24 +251,24 @@ function buildTabs(){
 }
 
 async function load(){
-  const app = document.getElementById("app");
+  const app=document.getElementById("app");
   app.innerHTML="";
 
-  const list = currentCategory==="all"?categories:[currentCategory];
+  const list=currentCategory==="all"?categories:[currentCategory];
 
   for(const c of list){
-    const items = await fetchCategory(c);
+    const items=await fetchCategory(c);
 
-    const section = document.createElement("section");
+    const section=document.createElement("section");
 
-    const h = document.createElement("h2");
-    h.textContent = c;
+    const h=document.createElement("h2");
+    h.textContent=c;
 
-    const grid = document.createElement("div");
+    const grid=document.createElement("div");
     grid.className="grid";
 
     items.forEach(i=>{
-      const t = document.createElement("div");
+      const t=document.createElement("div");
       t.className="tile";
 
       t.innerHTML=`
