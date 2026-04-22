@@ -23,12 +23,11 @@ body {
   font-family: system-ui, -apple-system, Segoe UI, Arial;
 }
 
-/* LAYOUT */
 .page {
   padding: 28px;
 }
 
-/* HEADER */
+/* HEADER CARD */
 .header {
   max-width:1100px;
   margin: 0 auto 18px auto;
@@ -40,26 +39,38 @@ body {
 }
 
 /* BRAND */
+.brand-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 10px;
+}
+
 .brand {
   font-size:20px;
   font-weight:800;
   cursor:pointer;
-  letter-spacing: 0.3px;
+  letter-spacing:0.3px;
 }
 
 .brand span {
   color: var(--accent);
 }
 
-/* CONTEXT */
 .context {
   font-size:12px;
   color: var(--muted);
 }
 
-/* SEARCH */
+/* SEARCH FIXED CONTAINMENT */
+.search-wrap {
+  width:100%;
+  display:block;
+}
+
 input {
   width:100%;
+  box-sizing:border-box; /* 🔥 fixes overflow issue */
   padding:12px 14px;
   border-radius:12px;
   border:1px solid var(--border);
@@ -86,6 +97,7 @@ input {
   border:1px solid var(--border);
   color: var(--muted);
   transition: 0.2s;
+  text-transform: capitalize;
 }
 
 .tab:hover {
@@ -96,6 +108,7 @@ input {
   background: rgba(122,162,255,0.15);
   border-color: rgba(122,162,255,0.35);
   color: var(--text);
+  box-shadow: 0 10px 30px rgba(122,162,255,0.08);
 }
 
 /* CONTENT */
@@ -113,6 +126,7 @@ h2 {
   font-weight:600;
   margin: 18px 0 12px;
   color: var(--muted);
+  text-transform: capitalize;
 }
 
 /* GRID */
@@ -124,34 +138,31 @@ h2 {
 
 /* TILE */
 .tile {
-  background: linear-gradient(180deg,
-    rgba(255,255,255,0.035),
-    rgba(255,255,255,0.025)
-  );
-
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow:hidden;
   display:flex;
   flex-direction:column;
   transition: all 0.25s ease;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .tile:hover {
   transform: translateY(-6px);
   border-color: rgba(122,162,255,0.25);
-  box-shadow: 0 22px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.55);
 }
 
 .tile img {
   width:100%;
   aspect-ratio:16/9;
   object-fit:cover;
+  cursor:pointer;
 }
 
 .tile-title {
-  padding:10px 10px 0 10px;
+  padding:10px;
   font-size:13px;
 }
 
@@ -188,10 +199,14 @@ h2 {
 
   <div class="header">
 
-    <div class="brand" id="brand"><span>Media</span> Tiles</div>
-    <div class="context" id="contextTitle"></div>
+    <div class="brand-row">
+      <div class="brand" id="brand"><span>Media</span> Tiles</div>
+      <div class="context" id="contextTitle"></div>
+    </div>
 
-    <input id="search" placeholder="Search library..." />
+    <div class="search-wrap">
+      <input id="search" placeholder="Search library..." />
+    </div>
 
     <div class="tabs" id="tabs"></div>
 
@@ -209,13 +224,17 @@ h2 {
 let allItems = [];
 let currentCategory = "all";
 
+/* IMPORTANT:
+   This keeps GitHub folder names intact
+   but allows nice UI labels */
+function label(cat) {
+  return cat.charAt(0).toUpperCase() + cat.slice(1);
+}
+
 const params = new URLSearchParams(window.location.search);
 currentCategory = params.get("category") || "all";
 
-/* =========================
-   SAFE HELPERS
-========================= */
-
+/* COPY */
 function copy(text) {
   navigator.clipboard.writeText(text);
   const t = document.getElementById("toast");
@@ -223,40 +242,20 @@ function copy(text) {
   setTimeout(()=>t.style.opacity=0, 900);
 }
 
-/* 🔥 keeps GitHub-safe key but UI pretty */
-function formatCategory(str) {
-  return str
-    .split("-")
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
-
-/* =========================
-   BRAND NAV
-========================= */
-
+/* BRAND NAV */
 document.getElementById("brand").onclick = () => {
   window.location.href = "index.html";
 };
 
-/* =========================
-   HEADER
-========================= */
-
+/* HEADER */
 function updateHeader() {
   const el = document.getElementById("contextTitle");
-
   el.textContent = currentCategory === "all"
     ? "Library"
-    : `${formatCategory(currentCategory)} / Library`;
+    : label(currentCategory) + " / Library";
 }
 
-/* =========================
-   TABS (CRITICAL FIX)
-   - fetch uses RAW key
-   - display uses formatted label
-========================= */
-
+/* TABS */
 function buildTabs() {
   const tabs = document.getElementById("tabs");
   tabs.innerHTML = "";
@@ -269,11 +268,10 @@ function buildTabs() {
 
     if (cat === currentCategory) d.classList.add("active");
 
-    // UI ONLY formatting
-    d.textContent = cat === "all" ? "All" : formatCategory(cat);
+    d.textContent = cat === "all" ? "All" : label(cat);
 
     d.onclick = () => {
-      currentCategory = cat; // 🔥 ALWAYS raw key
+      currentCategory = cat;
 
       const url = cat === "all"
         ? "browse.html"
@@ -290,10 +288,7 @@ function buildTabs() {
   });
 }
 
-/* =========================
-   DATA LOAD (UNCHANGED LOGIC)
-========================= */
-
+/* LOAD */
 async function load() {
   const app = document.getElementById("app");
   app.innerHTML = "";
@@ -306,13 +301,12 @@ async function load() {
 
   for (const cat of list) {
     const items = await fetchCategory(cat);
-
     allItems.push(...items);
 
     const section = document.createElement("section");
 
     const title = document.createElement("h2");
-    title.textContent = formatCategory(cat); // 🔥 UI FIX
+    title.textContent = label(cat);
 
     const grid = document.createElement("div");
     grid.className = "grid";
@@ -336,13 +330,9 @@ async function load() {
   }
 }
 
-/* =========================
-   SEARCH
-========================= */
-
+/* SEARCH */
 document.getElementById("search").addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
-
   const app = document.getElementById("app");
   app.innerHTML = "";
 
@@ -356,24 +346,20 @@ document.getElementById("search").addEventListener("input", e => {
   filtered.forEach(i => {
     const tile = document.createElement("div");
     tile.className = "tile";
-
     tile.innerHTML = `
       <img src="${i.url}" onclick="copy('${i.url}')"/>
       <div class="tile-title">${i.name}</div>
       <button onclick="copy('${i.url}')">Copy</button>
     `;
-
     grid.appendChild(tile);
   });
 
   app.appendChild(grid);
 });
 
-/* INIT */
 updateHeader();
 buildTabs();
 load();
-
 </script>
 
 </body>
