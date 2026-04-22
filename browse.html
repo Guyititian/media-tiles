@@ -12,84 +12,121 @@ body {
   background: radial-gradient(circle at top, #1a1a1a, #0b0b0b 70%);
 }
 
-/* HEADER */
+/* =========================
+   HEADER (LIBRARY IDENTITY)
+========================= */
 .header {
   position: sticky;
   top: 0;
   padding:20px;
-  background: rgba(10,10,10,0.9);
+  background: rgba(10,10,10,0.92);
   backdrop-filter: blur(10px);
   border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-/* BRAND */
+/* BRAND (MORE LOGO-LIKE) */
 #brand {
-  font-size:36px;
+  font-size:38px;
   margin:0;
   cursor:pointer;
 
   color:white;
+  letter-spacing:2px;
+
   text-shadow:
     0 0 10px rgba(255,255,255,0.2),
-    0 0 30px rgba(255,255,255,0.15);
+    0 0 30px rgba(255,255,255,0.12);
 }
 
-/* CONTEXT */
+/* CONTEXT LABEL */
 #contextTitle {
   margin-top:6px;
   font-size:14px;
-  opacity:0.6;
+  opacity:0.65;
 }
 
-/* TABS WRAPPER (DEPTH) */
+/* =========================
+   TABS (DEPTH SYSTEM)
+========================= */
 .tabs {
   margin-top:15px;
   display:flex;
   gap:10px;
   flex-wrap:wrap;
 
-  background:#111;
   padding:10px;
-  border-radius:12px;
+  border-radius:14px;
+
+  background: rgba(20,20,20,0.6);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.03),
+    0 10px 25px rgba(0,0,0,0.35);
 }
 
-/* TAB */
 .tab {
-  padding:8px 14px;
+  padding:9px 14px;
   border-radius:10px;
   cursor:pointer;
-  background:#1a1a1a;
   font-size:14px;
 
+  background:#1a1a1a;
   transition: all 0.2s ease;
 }
 
-/* HOVER */
+/* HOVER LIFT */
 .tab:hover {
+  transform: translateY(-2px);
   background:#222;
 }
 
-/* ACTIVE (DEPTH + GLOW) */
+/* ACTIVE TAB (FOCUS GLOW) */
 .tab.active {
   background:#2a2a2a;
 
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.15),
-    0 0 12px rgba(255,255,255,0.2);
+    inset 0 0 0 1px rgba(255,255,255,0.18),
+    0 0 18px rgba(255,255,255,0.18);
 }
 
-/* SEARCH */
-input {
-  width:calc(100% - 40px);
+/* =========================
+   SEARCH (RESTORED FOCUS CORE)
+========================= */
+.searchWrap {
   margin:20px;
   padding:12px;
-  border-radius:10px;
-  border:none;
-  background:#1a1a1a;
-  color:white;
+  border-radius:14px;
+
+  background: rgba(20,20,20,0.85);
+  border:1px solid rgba(255,255,255,0.06);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.03),
+    0 12px 30px rgba(0,0,0,0.45);
+
+  backdrop-filter: blur(10px);
 }
 
-/* SECTIONS */
+input {
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  border:none;
+  background:transparent;
+  color:white;
+  font-size:14px;
+  outline:none;
+}
+
+/* FOCUS GLOW */
+input:focus {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+}
+
+/* =========================
+   SECTIONS
+========================= */
 section {
   margin:30px 20px;
 }
@@ -100,14 +137,18 @@ h2 {
   opacity:0.9;
 }
 
-/* GRID */
+/* =========================
+   GRID
+========================= */
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
   gap:16px;
 }
 
-/* TILE */
+/* =========================
+   TILE (DEPTH SYSTEM)
+========================= */
 .tile {
   background:#151515;
   padding:10px;
@@ -120,15 +161,15 @@ h2 {
   transition: all 0.25s ease;
 }
 
-/* DEPTH */
+/* LIFT + LIGHT */
 .tile:hover {
-  transform: translateY(-5px) scale(1.02);
+  transform: translateY(-6px) scale(1.02);
 
   box-shadow:
-    0 15px 30px rgba(0,0,0,0.6),
-    0 0 15px rgba(255,255,255,0.15);
+    0 18px 35px rgba(0,0,0,0.6),
+    0 0 18px rgba(255,255,255,0.15);
 
-  border-color: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.18);
 }
 
 /* IMAGE */
@@ -137,12 +178,14 @@ h2 {
   aspect-ratio:16/9;
   object-fit:cover;
   border-radius:8px;
+  cursor:pointer;
 }
 
 /* TITLE */
 .tile-title {
   margin-top:8px;
   font-size:14px;
+  opacity:0.9;
 }
 
 /* BUTTON */
@@ -157,7 +200,9 @@ h2 {
   font-size:13px;
 }
 
-/* TOAST */
+/* =========================
+   TOAST
+========================= */
 #toast {
   position: fixed;
   bottom: 24px;
@@ -176,15 +221,22 @@ h2 {
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
   <h1 id="brand">MEDIA TILES</h1>
   <div id="contextTitle">LIBRARY</div>
   <div class="tabs" id="tabs"></div>
 </div>
 
-<input id="search" placeholder="Search tiles..." />
+<!-- SEARCH (RESTORED FOCUS CORE) -->
+<div class="searchWrap">
+  <input id="search" placeholder="Search tiles..." />
+</div>
 
+<!-- APP -->
 <div id="app">Loading...</div>
+
+<!-- TOAST -->
 <div id="toast">Copied</div>
 
 <script src="assets.js"></script>
@@ -193,37 +245,46 @@ h2 {
 let allItems = [];
 let currentCategory = "all";
 
+/* STATE */
 const params = new URLSearchParams(window.location.search);
 currentCategory = params.get("category") || "all";
 
+/* COPY */
 function copy(text) {
   navigator.clipboard.writeText(text);
   showToast("Copied ✓");
 }
 
+/* TOAST */
 function showToast(msg) {
   const toast = document.getElementById("toast");
   toast.textContent = msg;
+
   toast.style.opacity = "1";
   toast.style.transform = "translateX(-50%) translateY(0px)";
+
   setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform = "translateX(-50%) translateY(10px)";
   }, 1100);
 }
 
+/* BRAND NAV */
 document.getElementById("brand").onclick = () => {
   window.location.href = "index.html";
 };
 
+/* HEADER */
 function updateHeader() {
   const context = document.getElementById("contextTitle");
+
   context.textContent =
     currentCategory === "all"
-      ? "LIBRARY • ALL"
+      ? "LIBRARY • ALL COLLECTIONS"
       : "LIBRARY • " + currentCategory.replace(/-/g, " ");
 }
 
+/* TABS */
 function buildTabs() {
   const tabs = document.getElementById("tabs");
   tabs.innerHTML = "";
@@ -256,6 +317,7 @@ function buildTabs() {
   });
 }
 
+/* ACTIVE TAB STATE */
 function updateTabs() {
   document.querySelectorAll(".tab").forEach(tab => {
     const label = tab.textContent.toLowerCase().replace(/ /g, "-");
@@ -271,6 +333,7 @@ function updateTabs() {
   });
 }
 
+/* LOAD */
 async function loadData() {
   const app = document.getElementById("app");
   app.innerHTML = "Loading...";
@@ -316,6 +379,7 @@ async function loadData() {
   app.appendChild(container);
 }
 
+/* SEARCH */
 document.getElementById("search").addEventListener("input", (e) => {
   const q = e.target.value.toLowerCase();
 
@@ -345,6 +409,7 @@ document.getElementById("search").addEventListener("input", (e) => {
   app.appendChild(grid);
 });
 
+/* BACK */
 window.addEventListener("popstate", () => {
   const params = new URLSearchParams(window.location.search);
   currentCategory = params.get("category") || "all";
@@ -354,6 +419,7 @@ window.addEventListener("popstate", () => {
   updateTabs();
 });
 
+/* INIT */
 updateHeader();
 buildTabs();
 loadData();
