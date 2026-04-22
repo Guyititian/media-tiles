@@ -7,7 +7,7 @@
 <style>
 body {
   margin:0;
-  background:#0b0b0b;
+  background:#070707;
   color:white;
   font-family:Arial;
   height:100vh;
@@ -16,98 +16,103 @@ body {
   align-items:center;
 }
 
-/* MAIN LAYOUT */
+/* OUTER LAYER */
 .container {
   text-align:center;
-  max-width:900px;
+  max-width:1000px;
 }
 
-/* 🔥 BRAND BECOMES A VISUAL OBJECT */
-h1 {
-  font-size:54px;
-  margin:0;
-  letter-spacing:1px;
+/* 🔥 HERO BRAND (THIS IS THE FOCAL POINT AGAIN) */
+.hero {
+  padding:30px 50px;
+  border-radius:24px;
 
-  background: linear-gradient(90deg, #ffffff, #cfcfcf);
+  background: radial-gradient(circle at top,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.02),
+    transparent 70%
+  );
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.7),
+    0 0 60px rgba(255,255,255,0.08);
+
+  display:inline-block;
+}
+
+/* BIG BRAND TEXT */
+.hero h1 {
+  margin:0;
+  font-size:64px;
+
+  letter-spacing:2px;
+
+  background: linear-gradient(90deg, #ffffff, #bfbfbf);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
   text-shadow:
-    0 0 20px rgba(255,255,255,0.15),
-    0 0 60px rgba(255,255,255,0.08);
-
-  transform: translateY(-10px);
+    0 0 40px rgba(255,255,255,0.25),
+    0 0 80px rgba(255,255,255,0.10);
 }
 
-/* SUBTITLE HAS DEPTH NOW */
-.sub {
+/* SUBTITLE BELOW HERO */
+.hero p {
   margin-top:10px;
   font-size:14px;
-  opacity:0.7;
-  letter-spacing:0.5px;
+  opacity:0.65;
 }
 
-/* CARD LAYER */
+/* TILE ROW */
 .cards {
   display:flex;
   justify-content:center;
-  gap:28px;
-  margin-top:50px;
+  gap:40px;
+  margin-top:60px;
 }
 
-/* BIGGER, MORE OBJECT-LIKE TILES */
+/* STRONGER TILE DEPTH */
 .card {
-  width:320px;
+  width:340px;
   padding:26px;
   border-radius:18px;
 
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
 
-  backdrop-filter: blur(10px);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.6);
 
   cursor:pointer;
 
-  transition: all 0.25s ease;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.4);
+  transition:0.25s ease;
 }
 
-/* HOVER DEPTH */
+/* CLEAR LIFT */
 .card:hover {
-  transform: translateY(-10px) scale(1.02);
+  transform: translateY(-12px);
   box-shadow:
-    0 20px 50px rgba(0,0,0,0.6),
-    0 0 25px rgba(255,255,255,0.08);
+    0 35px 90px rgba(0,0,0,0.8),
+    0 0 30px rgba(255,255,255,0.10);
 }
 
 /* CARD TEXT */
 .card h2 {
-  margin:0 0 10px 0;
   font-size:20px;
+  margin:0 0 8px;
 }
 
 .card p {
   font-size:13px;
-  opacity:0.75;
+  opacity:0.7;
   line-height:1.4;
 }
 
-/* DESCRIPTION BLOCK UNDER CARDS */
-.description {
-  margin-top:50px;
-  font-size:13px;
-  opacity:0.5;
-  max-width:600px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
+/* FOOTER (PUSHED DOWN, NOT LOST) */
 .footer {
-  margin-top:40px;
-  font-size:11px;
-  opacity:0.3;
+  margin-top:60px;
+  font-size:12px;
+  opacity:0.35;
 }
 </style>
 </head>
@@ -116,29 +121,27 @@ h1 {
 
 <div class="container">
 
-  <h1>Media Tiles</h1>
-  <div class="sub">Ecosystem Portal</div>
+  <div class="hero">
+    <h1>Media Tiles</h1>
+    <p>Ecosystem Portal — Browse • Transform • Generate</p>
+  </div>
 
   <div class="cards">
 
     <div class="card" onclick="window.location.href='./browse.html'">
       <h2>📚 Library</h2>
-      <p>Curated media collections with direct asset access and copyable links.</p>
+      <p>Curated media tiles with structured collections and copyable asset links.</p>
     </div>
 
     <div class="card" onclick="window.location.href='https://guyititian.github.io/media-lab/'">
       <h2>🛠 Tools</h2>
-      <p>Upload media and generate processed outputs through the media engine.</p>
+      <p>Upload media and process it through generation pipelines and presets.</p>
     </div>
 
   </div>
 
-  <div class="description">
-    A modular media ecosystem designed for browsing, transforming, and generating visual assets through connected tools and collections.
-  </div>
-
   <div class="footer">
-    Media Tiles • Library + Tools System
+    Connected media ecosystem for browsing and generation workflows
   </div>
 
 </div>
